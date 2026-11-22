@@ -1,0 +1,14 @@
+# Compiled binaries
+dist/
+/erin
+/erin-xo1-linux-i386
+
+# Test & coverage artifacts
+*.test
+*.out
+coverage.txt
+
+# Editor / OS clutter
+.DS_Store
+*.swp
+*~
