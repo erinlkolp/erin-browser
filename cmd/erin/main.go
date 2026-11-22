@@ -18,7 +18,7 @@ func main() {
 		monoFlag   = flag.Bool("mono", false, "Start in monochrome mode (ideal for OLPC XO-1 sunlight display)")
 		colorFlag  = flag.Bool("color", false, "Start in color mode")
 		readerFlag = flag.Bool("reader", false, "Enable Reader Mode (main-content extraction)")
-		engineFlag = flag.String("engine", "", "Default search engine: ddg, wiki, mojeek, frogfind, google")
+		engineFlag = flag.String("engine", "", "Default search engine: marginalia, ddg, wiki, mojeek, frogfind, google")
 		uaFlag     = flag.String("ua", "", "User-Agent profile: firefox, mobile, classic")
 		dumpFlag   = flag.Bool("dump", false, "Fetch and print rendered text to stdout, then exit")
 		widthFlag  = flag.Int("width", 80, "Column width used with --dump")

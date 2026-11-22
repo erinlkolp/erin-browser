@@ -952,17 +952,17 @@ func (a *App) buildHomeHTML() string {
 	b.WriteString("<h1>Erin Text Browser (OLPC XO-1 Edition)</h1>")
 	b.WriteString("<p>Modern TLS 1.2/1.3 &amp; embedded root certificates — zero Fedora 18 SSL errors.</p>")
 
-	// Direct search form on Home screen!
+	// Direct search forms on Home screen!
 	b.WriteString("<h2>Quick Search</h2>")
-	b.WriteString(`<form method="GET" action="https://lite.duckduckgo.com/lite/">`)
-	b.WriteString(`<p>DuckDuckGo Lite: <input type="text" name="q" placeholder="search the web"> <input type="submit" value="Search"></p>`)
+	b.WriteString(`<form method="GET" action="https://old-search.marginalia.nu/search">`)
+	b.WriteString(`<p>Marginalia Search: <input type="text" name="query" placeholder="explore the web"> <input type="submit" value="Search"></p>`)
 	b.WriteString(`</form>`)
 	b.WriteString(`<form method="GET" action="https://en.wikipedia.org/w/index.php">`)
 	b.WriteString(`<p>Wikipedia: <input type="text" name="search" placeholder="encyclopedia"> <input type="submit" value="Lookup"></p>`)
 	b.WriteString(`</form>`)
 
-	fmt.Fprintf(&b, "<p>Default <b>g</b> search engine: <b>%s</b> (press <b>e</b> to cycle, or type <code>w: topic</code>, <code>d: query</code>, <code>m: query</code>, <code>f: query</code>).</p>", html.EscapeString(eng.Name))
-	b.WriteString("<p><i>Note on Google Search:</i> Google began requiring JavaScript on google.com/search in 2025, which blocks non-JS text browsers. DuckDuckGo Lite, Wikipedia, Mojeek, and FrogFind work natively here.</p>")
+	fmt.Fprintf(&b, "<p>Default <b>g</b> search engine: <b>%s</b> (press <b>e</b> to cycle, or type <code>ms: topic</code>, <code>w: topic</code>, <code>m: query</code>, <code>f: query</code>, <code>d: query</code>).</p>", html.EscapeString(eng.Name))
+	b.WriteString("<p><i>Note:</i> Marginalia Search, Wikipedia, Mojeek, and FrogFind serve clean HTML without CAPTCHAs or JavaScript gates.</p>")
 
 	b.WriteString("<h2>Your Bookmarks</h2><ul>")
 	for _, bm := range a.bookmarks {
@@ -1005,7 +1005,7 @@ func (a *App) buildHelpHTML() string {
 	return `<h1>Erin Browser — Keyboard Reference</h1>
 <h2>Navigation</h2>
 <ul>
-<li><b>g</b> — Go to URL or search (supports prefixes <code>d:</code> DuckDuckGo, <code>w:</code> Wikipedia, <code>m:</code> Mojeek, <code>f:</code> FrogFind, <code>g:</code> Google)</li>
+<li><b>g</b> — Go to URL or search (supports prefixes <code>ms:</code> Marginalia, <code>w:</code> Wikipedia, <code>m:</code> Mojeek, <code>f:</code> FrogFind, <code>d:</code> DuckDuckGo, <code>g:</code> Google)</li>
 <li><b>G</b> — Edit current URL</li>
 <li><b>Tab / Shift+Tab</b> (or <b>p</b>) — Focus next / previous link or form input</li>
 <li><b>0-9 then Enter</b> — Jump straight to numbered link or form field</li>

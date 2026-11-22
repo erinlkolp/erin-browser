@@ -19,6 +19,7 @@ func TestResolveInput(t *testing.T) {
 		{"localhost:8080/test", "http://localhost:8080/test"},
 		{"about:bookmarks", "about:bookmarks"},
 		{"olpc xo-1 specs", "https://lite.duckduckgo.com/lite/?q=olpc+xo-1+specs"},
+		{"ms: olpc xo-1", "https://old-search.marginalia.nu/search?query=olpc+xo-1"},
 		{"w: AMD Geode", "https://en.wikipedia.org/w/index.php?search=AMD+Geode"},
 		{"m: fedora 18", "https://www.mojeek.com/search?q=fedora+18"},
 		{"f: retro web", "http://frogfind.com/?q=retro+web"},

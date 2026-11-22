@@ -27,7 +27,7 @@ func DefaultConfig() Config {
 	return Config{
 		Monochrome:   false,
 		ReaderMode:   false,
-		SearchEngine: "ddg",
+		SearchEngine: "marginalia",
 		UserAgent:    "firefox",
 		HomeURL:      "about:home",
 	}
@@ -36,10 +36,11 @@ func DefaultConfig() Config {
 // DefaultBookmarks returns a curated starter list of text-friendly informative sites.
 func DefaultBookmarks() []Bookmark {
 	return []Bookmark{
-		{Title: "DuckDuckGo Lite (Web Search)", URL: "https://lite.duckduckgo.com/lite/"},
+		{Title: "Marginalia Search (Small Web & Info)", URL: "https://old-search.marginalia.nu/"},
 		{Title: "Wikipedia (English)", URL: "https://en.wikipedia.org/wiki/Main_Page"},
 		{Title: "Mojeek (Independent Search)", URL: "https://www.mojeek.com/"},
 		{Title: "FrogFind (Retro Search & Reader)", URL: "http://frogfind.com/"},
+		{Title: "DuckDuckGo Lite (Web Search)", URL: "https://lite.duckduckgo.com/lite/"},
 		{Title: "NPR Text-Only News", URL: "https://text.npr.org/"},
 		{Title: "CNN Lite News", URL: "https://lite.cnn.com/"},
 		{Title: "68k.news (Text News Aggregator)", URL: "http://68k.news/"},
@@ -73,7 +74,7 @@ func LoadConfig() Config {
 	}
 	_ = json.Unmarshal(data, &cfg)
 	if cfg.SearchEngine == "" {
-		cfg.SearchEngine = "ddg"
+		cfg.SearchEngine = "marginalia"
 	}
 	if cfg.UserAgent == "" {
 		cfg.UserAgent = "firefox"

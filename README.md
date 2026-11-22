@@ -129,7 +129,7 @@ erin [options] [url-or-search]
 | `--mono` | saved config | Start in strict Monochrome Mode (zero ANSI color codes) |
 | `--color` | saved config | Start in 16-color ANSI mode |
 | `--reader` | saved config | Start with Reader Mode enabled |
-| `--engine <id>` | `ddg` | Default search engine: `ddg`, `wiki`, `mojeek`, `frogfind`, `google` |
+| `--engine <id>` | `marginalia` | Default search engine: `marginalia`, `ddg`, `wiki`, `mojeek`, `frogfind`, `google` |
 | `--ua <profile>` | `firefox` | User-Agent profile: `firefox`, `mobile`, `classic` |
 | `--dump` | `false` | Fetch a URL/query, print rendered plain text to stdout, and exit |
 | `--width <cols>` | `80` | Column width used with `--dump` |
@@ -186,7 +186,7 @@ erin --dump --reader --width 76 https://en.wikipedia.org/wiki/OLPC_XO
 | `r` | Toggle **Reader Mode** (persisted automatically) |
 | `b` | Open **Bookmarks** page (`d` deletes the focused bookmark) |
 | `a` | Add the current page to Bookmarks |
-| `e` | Cycle default search engine (`ddg` → `wiki` → `mojeek` → `frogfind` → `google`) |
+| `e` | Cycle default search engine (`marginalia` → `ddg` → `wiki` → `mojeek` → `frogfind` → `google`) |
 | `U` | Cycle User-Agent (`Firefox Linux` → `Mobile Web` → `Erin XO-1`) |
 | `Ctrl+L` | Force screen redraw & resize recalculation |
 | `h` or `?` | Open built-in Help screen |
@@ -209,17 +209,19 @@ Typing any query into the `g` bar searches using your active search engine. You 
 
 | Prefix | Engine | Example |
 |---|---|---|
-| `d:` | **DuckDuckGo Lite** *(default)* | `d: fedora 18 olpc` |
+| `ms:` | **Marginalia Search** *(default — small-web & informative text sites)* | `ms: olpc xo-1` |
+| `d:` | **DuckDuckGo Lite** | `d: fedora 18 olpc` |
 | `w:` | **Wikipedia** | `w: AMD Geode` |
 | `m:` | **Mojeek** (independent HTML search) | `m: text mode browser` |
 | `f:` | **FrogFind** (retro search + HTML simplifier) | `f: linux terminal tips` |
 | `g:` | **Google** | `g: example` |
 
-### Why Google Search Doesn't Work Directly in Pure Text Mode
+### Why Google Search & DuckDuckGo Can Block Text Browsers
 
-Beginning in 2025, Google started requiring JavaScript execution on `www.google.com/search`. Because an AMD Geode LX-700 with 256 MB RAM cannot run a modern JavaScript engine (like V8/SpiderMonkey), pure text-mode browsers cannot execute Google's JS-gated search frontend directly.
+- **Google Search**: Beginning in 2025, Google started requiring JavaScript execution on `www.google.com/search`, which prevents pure text-mode browsers from loading Google results directly.
+- **DuckDuckGo Lite**: Frequently serves anti-bot CAPTCHAs to non-JS/text clients based on TLS fingerprint and rate limiting.
 
-**DuckDuckGo Lite**, **Mojeek**, **FrogFind**, and **Wikipedia** serve fast, clean, pure-HTML results with zero JavaScript required and work reliably on the XO-1.
+**Marginalia Search**, **Wikipedia**, **Mojeek**, and **FrogFind** serve fast, clean, pure-HTML results with zero JavaScript required and are ideal for the XO-1.
 
 ---
 
@@ -235,7 +237,7 @@ Created and updated automatically when you toggle settings (`m`, `r`, `e`, `U`):
 {
   "monochrome": true,
   "reader_mode": false,
-  "search_engine": "ddg",
+  "search_engine": "marginalia",
   "user_agent": "firefox",
   "home_url": "about:home"
 }
@@ -243,7 +245,7 @@ Created and updated automatically when you toggle settings (`m`, `r`, `e`, `U`):
 
 ### `~/.config/erin/bookmarks.json`
 
-Pre-populated on first run with text-friendly informative sites (DuckDuckGo Lite, Wikipedia, Simple English Wikipedia, Wikibooks, Mojeek, FrogFind, NPR Text-Only, CNN Lite, 68k.news, Hacker News). You can manage bookmarks in-app (`a` to add, `b` to browse, `d` to delete) or edit the JSON file directly:
+Pre-populated on first run with text-friendly informative sites (Marginalia Search, Wikipedia, Simple English Wikipedia, Wikibooks, Mojeek, FrogFind, DuckDuckGo Lite, NPR Text-Only, CNN Lite, 68k.news, Hacker News). You can manage bookmarks in-app (`a` to add, `b` to browse, `d` to delete) or edit the JSON file directly:
 
 ```json
 [

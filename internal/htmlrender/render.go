@@ -1141,7 +1141,10 @@ func resolveURL(base, ref string) string {
 }
 
 func shouldSkipNode(n *html.Node, tag string, readerMode bool) bool {
-	if hasAttr(n, "hidden") {
+	if hasAttr(n, "hidden") || hasAttr(n, "popover") {
+		return true
+	}
+	if tag == "dialog" && !hasAttr(n, "open") {
 		return true
 	}
 	if strings.EqualFold(getAttr(n, "aria-hidden"), "true") {

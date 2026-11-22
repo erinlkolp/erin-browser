@@ -93,3 +93,19 @@ func TestReaderModeStripsNavClutter(t *testing.T) {
 		t.Fatalf("reader mode missing main article body:\n%s", plain)
 	}
 }
+
+func TestClosedDialogIsSkipped(t *testing.T) {
+	sample := `<html><body>
+  <dialog><p>Hidden Filter Modal</p></dialog>
+  <dialog open><p>Visible Open Dialog</p></dialog>
+  <p>Main Search Result</p>
+</body></html>`
+	doc := RenderHTML(sample, "https://marginalia-search.com/", 80, false)
+	plain := DumpPlain(doc)
+	if strings.Contains(plain, "Hidden Filter Modal") {
+		t.Fatalf("closed <dialog> should be skipped, got:\n%s", plain)
+	}
+	if !strings.Contains(plain, "Visible Open Dialog") || !strings.Contains(plain, "Main Search Result") {
+		t.Fatalf("expected open dialog and main result, got:\n%s", plain)
+	}
+}

@@ -44,6 +44,12 @@ type SearchEngine struct {
 // SearchEngines lists available built-in search engines in cycle order.
 var SearchEngines = []SearchEngine{
 	{
+		ID:          "marginalia",
+		Name:        "Marginalia Search",
+		Prefix:      "ms:",
+		URLTemplate: "https://old-search.marginalia.nu/search?query=%s",
+	},
+	{
 		ID:          "ddg",
 		Name:        "DuckDuckGo Lite",
 		Prefix:      "d:",
