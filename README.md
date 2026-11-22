@@ -6,8 +6,25 @@ It solves the two biggest blockers that make `lynx` unusable on an XO-1 today: *
 
 ---
 
+## Screenshots
+
+### Monochrome Mode — DuckDuckGo Lite Search (XO-1 Reflective Sunlight Display)
+![DuckDuckGo Lite Search in Monochrome Mode](docs/screenshots/search-mono.png)
+
+### Home Screen (Color Mode)
+![Erin Home Screen in Color Mode](docs/screenshots/home-color.png)
+
+### Wikipedia over TLS 1.3 in Reader Mode
+![Wikipedia OLPC XO Article in Reader Mode](docs/screenshots/wikipedia-reader.png)
+
+### Bookmarks Manager (Monochrome Mode)
+![Bookmarks Manager in Monochrome Mode](docs/screenshots/bookmarks-mono.png)
+
+---
+
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [Why Erin?](#why-erin)
 - [Features](#features)
 - [Hardware & OS Compatibility](#hardware--os-compatibility)
