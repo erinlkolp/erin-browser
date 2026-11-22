@@ -227,7 +227,7 @@ func RenderHTML(rawHTML, baseURL string, width int, readerMode bool) *Document {
 	if width < 24 {
 		width = 24
 	}
-	root, err := html.Parse(strings.NewReader(rawHTML))
+	root, err := html.ParseWithOptions(strings.NewReader(rawHTML), html.ParseOptionEnableScripting(false))
 	if err != nil {
 		return RenderPlainText(rawHTML, baseURL, baseURL, width)
 	}
@@ -1129,7 +1129,15 @@ func resolveURL(base, ref string) string {
 	if err != nil {
 		return ref
 	}
-	return b.ResolveReference(u).String()
+	resolved := b.ResolveReference(u)
+	// Unwrap DuckDuckGo Lite redirect wrappers (//duckduckgo.com/l/?uddg=...) directly
+	// to save an extra TLS round-trip on the XO-1 and display the true destination URL.
+	if strings.HasSuffix(strings.ToLower(resolved.Hostname()), "duckduckgo.com") && resolved.Path == "/l/" {
+		if target := resolved.Query().Get("uddg"); strings.HasPrefix(target, "http://") || strings.HasPrefix(target, "https://") {
+			return target
+		}
+	}
+	return resolved.String()
 }
 
 func shouldSkipNode(n *html.Node, tag string, readerMode bool) bool {

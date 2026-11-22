@@ -17,10 +17,12 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/andybalholm/brotli"
+	"golang.org/x/net/html"
 	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/text/transform"
 )
@@ -300,6 +302,35 @@ func (c *Client) PostForm(rawURL string, values url.Values, referer string) (*Re
 }
 
 func (c *Client) doRequest(method, rawURL string, form url.Values, referer string) (*Response, error) {
+	const maxMetaRedirects = 5
+	visited := map[string]bool{}
+	curMethod := method
+	curURL := rawURL
+	curForm := form
+	curReferer := referer
+
+	for hop := 0; hop <= maxMetaRedirects; hop++ {
+		resp, err := c.doSingleRequest(curMethod, curURL, curForm, curReferer)
+		if err != nil {
+			return nil, err
+		}
+		if !resp.IsHTML || hop == maxMetaRedirects {
+			return resp, nil
+		}
+		nextURL := extractMetaRefreshURL(resp.Body, resp.FinalURL)
+		if nextURL == "" || nextURL == resp.FinalURL || visited[nextURL] {
+			return resp, nil
+		}
+		visited[resp.FinalURL] = true
+		curMethod = http.MethodGet
+		curForm = nil
+		curReferer = resp.FinalURL
+		curURL = nextURL
+	}
+	return c.doSingleRequest(curMethod, curURL, curForm, curReferer)
+}
+
+func (c *Client) doSingleRequest(method, rawURL string, form url.Values, referer string) (*Response, error) {
 	var bodyReader io.Reader
 	if method == http.MethodPost && form != nil {
 		bodyReader = strings.NewReader(form.Encode())
@@ -452,4 +483,84 @@ func decodeCharset(data []byte, charset string) string {
 		return string(data)
 	}
 	return string(decoded)
+}
+
+// extractMetaRefreshURL parses HTML for an immediate <meta http-equiv="refresh" content="0;url=...">
+// redirect (including inside <noscript>) and resolves it against baseURL.
+func extractMetaRefreshURL(rawHTML, baseURL string) string {
+	doc, err := html.ParseWithOptions(strings.NewReader(rawHTML), html.ParseOptionEnableScripting(false))
+	if err != nil {
+		return ""
+	}
+	var found string
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n == nil || found != "" {
+			return
+		}
+		if n.Type == html.ElementNode && strings.EqualFold(n.Data, "meta") {
+			var httpEquiv, content string
+			for _, a := range n.Attr {
+				if strings.EqualFold(a.Key, "http-equiv") {
+					httpEquiv = strings.TrimSpace(a.Val)
+				} else if strings.EqualFold(a.Key, "content") {
+					content = strings.TrimSpace(a.Val)
+				}
+			}
+			if strings.EqualFold(httpEquiv, "refresh") && content != "" {
+				if target := parseMetaRefreshContent(content); target != "" {
+					found = resolveMetaURL(baseURL, target)
+					return
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(doc)
+	return found
+}
+
+// parseMetaRefreshContent extracts the target URL from a meta refresh content attribute
+// if the delay is <= 3 seconds (so periodic page auto-reloads aren't treated as redirects).
+func parseMetaRefreshContent(content string) string {
+	idx := strings.IndexAny(content, ";,")
+	if idx < 0 {
+		return ""
+	}
+	delayStr := strings.TrimSpace(content[:idx])
+	delay, err := strconv.ParseFloat(delayStr, 64)
+	if err != nil || delay < 0 || delay > 3 {
+		return ""
+	}
+	rest := strings.TrimSpace(content[idx+1:])
+	if len(rest) >= 4 && strings.EqualFold(rest[:4], "url=") {
+		rest = strings.TrimSpace(rest[4:])
+	} else {
+		// Handle optional whitespace around '=' like "url = ..."
+		eq := strings.IndexByte(rest, '=')
+		if eq < 0 || !strings.EqualFold(strings.TrimSpace(rest[:eq]), "url") {
+			return ""
+		}
+		rest = strings.TrimSpace(rest[eq+1:])
+	}
+	rest = strings.Trim(rest, `"' `)
+	return rest
+}
+
+func resolveMetaURL(baseURL, ref string) string {
+	b, err := url.Parse(baseURL)
+	if err != nil {
+		return ref
+	}
+	u, err := url.Parse(ref)
+	if err != nil {
+		return ref
+	}
+	resolved := b.ResolveReference(u)
+	if resolved.Scheme != "http" && resolved.Scheme != "https" {
+		return ""
+	}
+	return resolved.String()
 }

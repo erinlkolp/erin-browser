@@ -83,10 +83,14 @@ The OLPC XO-1 is an iconic, rugged little machine, but browsing the modern web o
 
 ### Option 1: Copy over the network (`scp`)
 
-From the machine where you built Erin:
+From the machine where you built Erin (Fedora 18's older OpenSSH server requires enabling legacy `ssh-rsa` host keys and `-O` classic SCP protocol from modern clients):
 
 ```bash
-scp dist/erin-xo1-linux-i386 olpc@<xo-ip-address>:~/erin
+scp -O \
+  -o HostKeyAlgorithms=+ssh-rsa \
+  -o PubkeyAcceptedAlgorithms=+ssh-rsa \
+  -o KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1 \
+  dist/erin-xo1-linux-i386 olpc@<xo-ip-address>:~/erin
 ```
 
 ### Option 2: Copy via USB flash drive
